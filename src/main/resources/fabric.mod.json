@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "subtitulo",
+	"version": "${version}",
+	"name": "Easy Subtitle",
+	"description": "Subtitulos personalizados en pantalla.",
+	"authors": [
+		"G&P STUDIOS, SantiagoGP"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "GNU General Public License v3.0",
+	"icon": "assets/subtitulo/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.subtitulo.Subtitulo"
+		],
+		"client": [
+			"com.subtitulo.SubtituloCliente"
+		],
+		"fabric-datagen": [
+			"com.subtitulo.SubtituloDataGenerator"
+		]
+	},
+	"mixins": [
+		"subtitulo.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
