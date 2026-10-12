@@ -3,7 +3,7 @@
 	"id": "subtitulo",
 	"version": "${version}",
 	"name": "Easy Subtitle",
-	"description": "Subtitulos personalizados en pantalla.",
+	"description": "Este mod añade la capacidad de agregar Subtitulos",
 	"authors": [
 		"G&P STUDIOS, SantiagoGP"
 	],
