@@ -19,7 +19,7 @@ final class PantallaPosicion extends Screen {
     private int desfaseY;
 
     PantallaPosicion() {
-        super(Text.literal("Posicion del subtitulo"));
+        super(Text.translatable("subtitle.posicion.titulo"));
     }
 
     @Override
@@ -27,10 +27,10 @@ final class PantallaPosicion extends Screen {
         if (!modificado) {
             cargarDesdeConfig();
         }
-        addDrawableChild(ButtonWidget.builder(Text.literal("Restablecer"), boton -> restablecer())
+        addDrawableChild(ButtonWidget.builder(Text.translatable("subtitle.posicion.restablecer"), boton -> restablecer())
                 .dimensions(width / 2 - 105, 8, 100, 20)
                 .build());
-        addDrawableChild(ButtonWidget.builder(Text.literal("Listo"), boton -> close())
+        addDrawableChild(ButtonWidget.builder(Text.translatable("subtitle.posicion.listo"), boton -> close())
                 .dimensions(width / 2 + 5, 8, 100, 20)
                 .build());
     }
@@ -57,8 +57,8 @@ final class PantallaPosicion extends Screen {
         for (int y = 0; y < height; y += 6) {
             context.fill(centro, y, centro + 1, y + 3, colorGuia);
         }
-        context.drawCenteredTextWithShadow(textRenderer, Text.literal("Arrastra el subtitulo para moverlo"), centro, 38, 0xFFFFFF);
-        context.drawCenteredTextWithShadow(textRenderer, Text.literal("Flechas: ajuste fino (Shift: x5)  |  Esc: guardar y salir"), centro, 50, 0xAAAAAA);
+        context.drawCenteredTextWithShadow(textRenderer, Text.translatable("subtitle.posicion.instruccion_arrastrar"), centro, 38, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(textRenderer, Text.translatable("subtitle.posicion.instruccion_teclas"), centro, 50, 0xAAAAAA);
         DibujoSubs.dibujar(context, client, NOMBRE_EJEMPLO, TEXTO_EJEMPLO, -1, 1.0f, centroX(), borde());
         DibujoSubs.Caja caja = DibujoSubs.medir(client, NOMBRE_EJEMPLO, TEXTO_EJEMPLO, width, centroX(), borde());
         if (caja != null) {

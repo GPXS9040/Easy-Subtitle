@@ -45,123 +45,181 @@ public class Subtitulo implements ModInitializer {
 
 	private static final Pattern NOMBRE_VALIDO = Pattern.compile("[A-Za-z0-9_-]+");
 
+
 	private static final String EJEMPLO = """
             // =====================================================================
-            // EJEMPLO DE SUBTITULOS  /  SUBTITLES EXAMPLE
+            //             EJEMPLO DE SUBTITULOS / SUBTITLES EXAMPLE
             // =====================================================================
-            // [ES] Las lineas que empiezan con // o con # son comentarios: el mod las ignora.
-            //      No escribas comentarios al final de una linea de opciones o de subtitulo.
-            // [EN] Lines starting with // or # are comments: the mod ignores them.
-            //      Do not put comments at the end of an option or subtitle line.
+            //
+            // [ES] Las lineas que empiezan con // o # son comentarios y se ignoran.
+            //      No escribas comentarios al final de las opciones o subtitulos.
+            // [EN] Lines starting with // or # are comments and are ignored.
+            //      Do not add comments at the end of options or subtitle lines.
             //
             // ---------------------------------------------------------------------
-            // [ES] COMO USARLO
+            // COMO USARLO / HOW TO USE
             // ---------------------------------------------------------------------
-            // 1. Crea una carpeta dentro de subsSound (por ejemplo subsSound/mi_audio).
-            //    El nombre solo puede tener letras, numeros, _ y -.
-            // 2. Dentro pon tu audio como sound.ogg (mono o estereo) y este archivo
-            //    como sub.lrc (tambien funciona sub.json). Si existen los dos, se usa sub.json.
-            // 3. En el juego escribe: /subtitulo play @a mi_audio
-            //    Si no hay sound.ogg, los subtitulos corren igual con un reloj interno.
-            // 4. Guarda este archivo en UTF-8 para que las tildes se vean bien.
             //
-            // [ES] COMANDOS
-            //    /subtitulo play <jugadores> <carpeta>                iniciar
-            //    /subtitulo stop <jugadores> [carpeta]                detener (sin carpeta: todos)
-            //    /subtitulo reload [carpeta]                          recargar este archivo sin reiniciar el audio
-            //    /subtitulo seek <jugadores> <carpeta> <tiempo>       saltar a un momento (01:15 o 75.5)
-            //    /subtitulo mostrar <jugadores> <segundos> <texto>    mensaje suelto
-            //    Tecla K: mover el subtitulo en pantalla (se puede cambiar en Controles).
+            // [ES] 1. Crea una carpeta dentro de subsSound.
+            //         Ejemplo: subsSound/mi_audio
+            // [EN] 1. Create a folder inside subsSound.
+            //         Example: subsSound/my_audio
             //
-            // ---------------------------------------------------------------------
-            // [EN] HOW TO USE IT
-            // ---------------------------------------------------------------------
-            // 1. Create a folder inside subsSound (for example subsSound/my_audio).
-            //    The name can only contain letters, numbers, _ and -.
-            // 2. Put your audio inside as sound.ogg (mono or stereo) and this file
-            //    as sub.lrc (sub.json also works). If both exist, sub.json is used.
-            // 3. In game type: /subtitulo play @a my_audio
-            //    Without sound.ogg the subtitles still run using an internal clock.
-            // 4. Save this file as UTF-8 so accents display correctly.
+            // [ES] 2. Coloca el audio sound.ogg y el archivo de subtitulos
+            //         dentro de la carpeta. Usa sub.lrc o sub.json.
+            //         Si existen ambos archivos, se utiliza sub.json.
+            // [EN] 2. Place sound.ogg and the subtitle file inside the folder.
+            //         Use sub.lrc or sub.json. If both exist, sub.json is used.
             //
-            // [EN] COMMANDS
-            //    /subtitulo play <players> <folder>                   start
-            //    /subtitulo stop <players> [folder]                   stop (no folder: everything)
-            //    /subtitulo reload [folder]                           reload this file without restarting the audio
-            //    /subtitulo seek <players> <folder> <time>            jump to a moment (01:15 or 75.5)
-            //    /subtitulo mostrar <players> <seconds> <text>        one-off message
-            //    Key K: move the subtitle on screen (can be changed in Controls).
+            // [ES] 3. Inicia la reproduccion dentro del juego:
+            //         /subtitulo play @a mi_audio
+            // [EN] 3. Start playback in game using the command above.
+            //
+            // [ES] 4. Si no existe sound.ogg, los subtitulos utilizan
+            //         un reloj interno.
+            // [EN] 4. If sound.ogg is missing, subtitles use an internal clock.
+            //
+            // Guarda el archivo en UTF-8 para mostrar correctamente las tildes.
+            // Save the file as UTF-8 to display special characters correctly.
             //
             // ---------------------------------------------------------------------
-            // [ES] FORMATO DE CADA LINEA
+            // COMANDOS / COMMANDS
             // ---------------------------------------------------------------------
-            //    [minutos:segundos.decimales] texto
-            //    [minutos:segundos.decimales][Nombre] texto
             //
-            // - El tiempo es el momento en que aparece la linea. Ejemplos: [00:10] [01:02.50]
-            //   Tambien vale sin corchetes: 00:10 texto   (y horas: 1:02:30)
-            // - El [Nombre] es opcional. Si lo pones, sale como "Nombre: texto".
-            //   Si no lo pones, solo sale el texto.
-            // - Una linea sin texto, solo con el tiempo, BORRA el subtitulo:   [00:15.00]
-            //   Sirve para silencios o partes instrumentales.
-            // - Cada linea se queda en pantalla hasta que empieza la siguiente.
-            // - La ultima linea se queda 2 segundos despues de que termina el audio.
-            // - Puedes repetir una linea en varios momentos: [00:10.00][01:30.00] Estribillo
-            // - Puedes usar archivos .lrc de letras ya hechos. Se ignoran las etiquetas
-            //   como [ar:...] o [ti:...] y los tiempos por palabra <00:10.50>.
+            // /subtitulo play <jugadores> <carpeta>
+            // Inicia el audio y los subtitulos para los jugadores seleccionados.
+            // Starts audio and subtitles for the selected players.
             //
-            // ---------------------------------------------------------------------
-            // [EN] LINE FORMAT
-            // ---------------------------------------------------------------------
-            //    [minutes:seconds.decimals] text
-            //    [minutes:seconds.decimals][Name] text
+            // /subtitulo stop <jugadores> [carpeta]
+            // Detiene la reproduccion. Sin carpeta, detiene todas las reproducciones
+            // de los jugadores seleccionados.
+            // Stops playback. Without a folder, stops all playback for those players.
             //
-            // - The time is the moment the line appears. Examples: [00:10] [01:02.50]
-            //   Brackets are optional: 00:10 text   (hours also work: 1:02:30)
-            // - The [Name] is optional. If present, it shows as "Name: text".
-            //   If missing, only the text is shown.
-            // - A line with no text, only the time, CLEARS the subtitle:   [00:15.00]
-            //   Useful for silences or instrumental parts.
-            // - Each line stays on screen until the next one starts.
-            // - The last line stays 2 seconds after the audio ends.
-            // - You can repeat a line at several moments: [00:10.00][01:30.00] Chorus
-            // - Ready-made .lrc lyric files work too. Tags like [ar:...] or [ti:...]
-            //   and per-word times <00:10.50> are ignored.
+            // /subtitulo reload [carpeta]
+            // Recarga los subtitulos sin reiniciar el audio.
+            // Reloads subtitles without restarting the audio.
+            //
+            // /subtitulo seek <jugadores> <carpeta> <tiempo>
+            // Salta a un momento especifico, por ejemplo 01:15 o 75.5.
+            // Jumps to a specific timestamp, for example 01:15 or 75.5.
+            //
+            // /subtitulo mostrar <jugadores> <segundos> <texto>
+            // Muestra un mensaje independiente durante el tiempo indicado.
+            // Displays a standalone message for the specified duration.
+            //
+            // Tecla K: permite mover el subtitulo por la pantalla.
+            // Puedes cambiar la tecla desde el menu Controles.
+            // Key K: moves the subtitle on screen. Change it in Controls.
             //
             // ---------------------------------------------------------------------
-            // [ES] OPCIONES (todas son opcionales, van en lineas aparte: clave = valor)
-            // [EN] OPTIONS (all optional, one per line: key = value)
+            // FORMATO DE LOS SUBTITULOS / SUBTITLE FORMAT
             // ---------------------------------------------------------------------
-            // fade             [ES] true: cada linea aparece y se desvanece suavemente.
-            //                  [EN] true: each line fades in and out smoothly.
-            // letra_por_letra  [ES] true: el texto se escribe letra por letra.
-            //                  [EN] true: the text is typed letter by letter.
-            // velocidad        [ES] letras por segundo del efecto anterior (1 a 200).
-            //                  [EN] letters per second for the effect above (1 to 200).
-            // bucle            [ES] true: el audio y los subtitulos se repiten hasta usar stop.
-            //                  [EN] true: audio and subtitles loop until you use stop.
-            // volumen          [ES] volumen de este audio, de 0 a 1 (se suma a los sliders del juego).
-            //                  [EN] volume of this audio, from 0 to 1 (on top of the game sliders).
-            // color            [ES] color del texto. Por defecto blanco.
-            //                  [EN] text color. White by default.
-            // color_nombre     [ES] color de los nombres. Si no lo pones, usan el mismo color del texto.
-            //                  [EN] color of the names. If missing, they use the text color.
-            // [Nombre] = color [ES] color propio de un personaje: toda su linea (nombre y texto).
-            //                  [EN] a character's own color: their whole line (name and text).
             //
-            // [ES] COLORES: blanco, gris, gris_oscuro, negro, rojo, rojo_oscuro, naranja, dorado,
-            //      amarillo, verde, verde_oscuro, celeste, cian, azul, azul_oscuro, morado, magenta, rosa.
-            //      Tambien cualquier color con codigo, por ejemplo #FF8800.
-            //      Prioridad: color del personaje, luego color_nombre, luego color.
-            // [EN] COLORS: white, gray, darkgray, black, red, darkred, orange, gold, yellow,
-            //      green, darkgreen, aqua, cyan, blue, darkblue, purple, magenta, pink.
-            //      Any hex color also works, for example #FF8800.
-            //      Priority: character color, then color_nombre, then color.
+            // [minutos:segundos.decimales] Texto
+            // [minutos:segundos.decimales][Nombre] Texto
             //
-            // [ES] Para activar una opcion comentada, borra el // del inicio.
-            // [EN] To enable a commented option, remove the leading //.
+            // [ES] El tiempo indica cuando aparece el subtitulo.
+            //      Ejemplos: [00:10.00] o [01:02.50]
+            //      Tambien se admiten tiempos sin corchetes: 00:10 Texto
+            //      y formatos con horas: 1:02:30.
+            //
+            // [EN] The timestamp determines when the subtitle appears.
+            //      Examples: [00:10.00] or [01:02.50]
+            //      Timestamps without brackets and hour formats are also supported.
+            //
+            // [ES] El nombre es opcional. Si se incluye, se muestra como:
+            //      Nombre: Texto
+            //      Si se omite, solo aparece el texto.
+            //
+            // [EN] The character name is optional. If included, it appears as:
+            //      Name: Text
+            //      If omitted, only the text is displayed.
+            //
+            // [ES] Una linea que contiene solo un tiempo borra el subtitulo.
+            //      Ejemplo: [00:15.00]
+            //      Util para silencios o partes instrumentales.
+            //
+            // [EN] A line containing only a timestamp clears the subtitle.
+            //      Useful for silences or instrumental sections.
+            //
+            // [ES] Cada linea permanece visible hasta que comienza la siguiente.
+            //      La ultima linea permanece 2 segundos tras terminar el audio.
+            //
+            // [EN] Each line stays visible until the next one begins.
+            //      The last line remains visible for 2 seconds after the audio ends.
+            //
+            // [ES] Tambien puedes utilizar archivos de letras .lrc existentes.
+            //      Se ignoran etiquetas como [ar:...] y [ti:...],
+            //      asi como los tiempos por palabra, por ejemplo <00:10.50>.
+            //
+            // [EN] Existing .lrc lyric files are also supported.
+            //      Tags such as [ar:...] and [ti:...], as well as word-level
+            //      timestamps such as <00:10.50>, are ignored.
+            //
+            // ---------------------------------------------------------------------
+            // OPCIONES / OPTIONS
+            // ---------------------------------------------------------------------
+            //
+            // Escribe cada opcion en una linea separada usando clave = valor.
+            // Write each option on a separate line using key = value.
+            //
+            // fade = true
+            // [ES] Activa la aparicion y desaparicion gradual.
+            // [EN] Enables subtitle fade-in and fade-out.
+            //
+            // letra_por_letra = true
+            // [ES] Muestra el texto letra por letra.
+            // [EN] Displays the text one letter at a time.
+            //
+            // velocidad = 30
+            // [ES] Velocidad del efecto anterior, de 1 a 200 letras por segundo.
+            // [EN] Typing speed, from 1 to 200 letters per second.
+            //
+            // bucle = true
+            // [ES] Repite el audio y los subtitulos hasta detenerlos.
+            // [EN] Loops the audio and subtitles until stopped.
+            //
+            // volumen = 1.0
+            // [ES] Volumen del audio, entre 0 y 1.
+            // [EN] Audio volume, from 0 to 1.
+            //
+            // color = blanco
+            // [ES] Color predeterminado del texto.
+            // [EN] Default text color.
+            //
+            // color_nombre = amarillo
+            // [ES] Color predeterminado de los nombres.
+            // [EN] Default character name color.
+            //
+            // [Nombre] = color
+            // [ES] Establece un color propio para el nombre y texto del personaje.
+            // [EN] Sets a custom color for a character's name and text.
+            //
+            // COLORES / COLORS
+            //
+            // blanco, gris, gris_oscuro, negro, rojo, rojo_oscuro, naranja,
+            // dorado, amarillo, verde, verde_oscuro, celeste, cian, azul,
+            // azul_oscuro, morado, magenta, rosa.
+            //
+            // white, gray, darkgray, black, red, darkred, orange, gold,
+            // yellow, green, darkgreen, aqua, cyan, blue, darkblue, purple,
+            // magenta, pink.
+            //
+            // Tambien puedes utilizar colores hexadecimales, como #FF8800.
+            // Hexadecimal colors are also supported, for example #FF8800.
+            //
+            // Prioridad / Priority:
+            // 1. Color del personaje / Character color
+            // 2. color_nombre
+            // 3. color
+            //
+            // Para activar una opcion de ejemplo, elimina el // inicial.
+            // To enable an example option, remove the leading //.
+            //
             // =====================================================================
-
+            // EJEMPLO DE CONFIGURACION / CONFIGURATION EXAMPLE
+            // =====================================================================
+            //
             // ---------- OPCIONES / OPTIONS ----------
             fade = false
             letra_por_letra = false
@@ -169,10 +227,10 @@ public class Subtitulo implements ModInitializer {
             bucle = false
             volumen = 1.0
             color = blanco
-            // color_nombre = amarillo
-            // [Narrador] = celeste
-            // [Maria] = #FF69B4
-
+            color_nombre = amarillo
+            [Narrador] = celeste
+            [Maria] = #FF69B4
+            //
             // ---------- SUBTITULOS / SUBTITLES ----------
             [00:01.00][Narrador] Hola, este es un subtitulo de ejemplo.
             [00:05.00] Una linea sin nombre solo muestra el texto.
@@ -181,6 +239,7 @@ public class Subtitulo implements ModInitializer {
             [00:14.50] Esta aparece despues de una linea vacia.
             [00:18.00][Narrador] Fin del ejemplo.
             """;
+
 
 	public static Path raiz() {
 		return FabricLoader.getInstance().getGameDir().resolve(CARPETA_RAIZ);

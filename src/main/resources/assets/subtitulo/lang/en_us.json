@@ -1,4 +1,9 @@
 {
-  "key.subtitulo.posicion": "Mover subtitulos",
-  "category.subtitulo": "Subtitulo"
+  "key.subtitulo.posicion": "Move subtitles",
+  "category.subtitulo": "Subtitle",
+  "subtitle.posicion.titulo": "Subtitle Position",
+  "subtitle.posicion.restablecer": "Reset",
+  "subtitle.posicion.listo": "Done",
+  "subtitle.posicion.instruccion_arrastrar": "Drag the subtitle to move it",
+  "subtitle.posicion.instruccion_teclas": "Arrows: fine adjustment (Shift: x5)  |  Esc: save and exit"
 }
